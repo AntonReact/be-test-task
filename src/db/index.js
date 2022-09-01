@@ -42,14 +42,18 @@ const createRating = (request, response) => {
   const { app_id, user_id, rating } = request.body
 
   pool.query(
-    'INSERT INTO ratings (app_id, user_id, rating) VALUES ($1, $2, $3)',
+    `
+      INSERT INTO ratings (app_id, user_id, rating) VALUES ($1, $2, $3)
+      ON CONFLICT ON CONSTRAINT id
+      DO UPDATE SET rating = $3
+    `,
     [app_id, user_id, rating],
     (error) => {
       if (error) {
         response.status(500).end();
         console.log(error);
       } else {
-        response.status(201).send(`Rating created`);
+        response.status(201).send(`Rating saved successfully`);
       }
   })
 }

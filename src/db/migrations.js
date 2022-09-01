@@ -32,8 +32,17 @@ const appsMigrate = (pool) => {
   `)
 }
 
+const dropDBs = (pool) => {
+  return pool.query(`
+    DROP TABLE IF EXISTS ratings;
+    DROP TABLE IF EXISTS apps;
+    DROP TABLE IF EXISTS users;
+  `)
+}
+
 const migrate = async (pool) => {
   try {
+    await dropDBs(pool);
     await usersMigrate(pool);
     await appsMigrate(pool);
     await ratingMigrate(pool);
